@@ -19,6 +19,6 @@ public interface ArtistaRepository extends Neo4jRepository<Artista, Long> {
     RETURN a, collect(m) AS musicas, collect(g) AS generos
     """)
     Optional<Artista> findArtistaComMusicasEGeneros(String spotifyId);
-
+    //List<Artista> findByGenero(String genero);
     //List<Artista> findByGeneroIgnoreCase(String genero);
 }

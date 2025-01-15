@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Registro - BCC Music</title>
+    <link rel="stylesheet" href="css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <h1>BCC<span>MUSIC</span></h1>
+        <nav>
+            <ul>
+                <li><a href="telainicio.html" class="btn-home">Home</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="register-container">
+        <h2>
+            <img src="./Imagens/register.png" alt="Ícone de Registro" class="register-icon">
+            Registro
+        </h2>
+        <form class="form-login" id="registerForm">
+            <label for="username">Nome de Usuário</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password" required>
+            
+            <hr>
+            <label for="genero">Gênero</label>
+            <select id="genero" name="genero" required>
+                <option value="">Selecione</option>
+                <option value="masculino">Masculino</option>
+                <option value="feminino">Feminino</option>
+                <option value="outro">Outro</option>
+            </select>
+         
+            <label for="data">Data de Nascimento</label>
+            <input type="date" id="data" name="data" required>
+
+            <button type="submit" class="btn-register">Registrar</button>
+
+            <hr>
+
+            <div class="options">
+                <a href="login.html">Já possui uma conta? Logue Aqui</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>&copy; 2024 DonateFund. Todos os direitos reservados.</p>
+    </div>
+</footer>
+<script src="js/register.js"></script>
+</body>
+</html>

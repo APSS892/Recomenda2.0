@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Encode+Sans+Expanded:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"');
+
+* {
+    font-family: 'Encode Sans Expanded', 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: #121212;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*-------------------Header-------------------*/
+header {
+    background-color: black;
+    padding: 5px 0;
+    border-bottom: solid 1px rgb(18, 18, 18);
+    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+header h1 {
+    color: rgb(126, 2, 154);
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+header h1 span {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/*-------------------Nav-------------------*/
+nav ul {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    border: none;
+}
+
+/*-------------------Home-------------------*/
+.btn-home {
+    background-color: rgb(126, 2, 154);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.btn-home:hover {
+    background-color: rgb(208, 0, 255);;
+    transform: scale(1.1);
+}
+
+/*-------------------Login-------------------*/
+.login-container {
+    background-color: rgb(255, 255, 255);
+    max-width: 400px;
+    width: 100%;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.712);
+    animation: slideUp 1.0s ease-out forwards;
+}
+
+.login-container h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.login-container .login-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.login-container label {
+    display: block;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0f1923;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-container button:hover {
+    background-color: #0ef589;
+}
+
+/* Linha divisória */
+.login-container hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+/* Estilo das opções abaixo do login */
+.options {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.options a {
+    color: #0ef589;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.options a:hover {
+    color: #0f1923;
+}
+
+@media (max-width: 600px) {
+    .login-container {
+        margin: 20px;
+    }
+}
+
+/*-------------------Footer-------------------*/
+footer {
+    background-color: #000000;
+    color: #ffffff;
+    text-align: center;
+    padding: 15px 0;
+}
+
+
+
+/*-------------------Animações-------------------*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

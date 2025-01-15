@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Encode+Sans+Expanded:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"');
+
+*{ 
+    font-family: 'Encode Sans Expanded', 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: #121212;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*-------------------Header-------------------*/
+header {
+    background-color: black;
+    padding: 5px 0;
+    border-bottom: solid 1px rgb(251, 251, 251);
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+header h1 {
+    color: rgb(126, 2, 154);
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+header h1 span {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.navbar {
+    background-color: #1DB954;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.main-container {
+    padding: 20px;
+}
+
+.card {
+    background-color: #181818;
+    border: none;
+}
+
+.card-title, .card-text {
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #1DB954;
+    border: none;
+}
+
+footer {
+    background-color: #282828;
+    padding: 10px;
+    text-align: center;
+    color: #b3b3b3;
+}

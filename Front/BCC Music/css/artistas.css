@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Encode+Sans+Expanded:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"');
+
+*{ 
+    font-family: 'Encode Sans Expanded', 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*-------------------Header-------------------*/
+header {
+    background-color: black;
+    padding: 5px 0;
+    border-bottom: solid 1px rgb(251, 251, 251);
+    box-shadow: 0 4px 6px rgba(25, 24, 24, 0.3);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+header h1 {
+    color: rgb(225, 126, 247);
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+header h1 span {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/*-------------------NPage-------------------*/
+#next-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+#next-page-btn.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/*-------------------Nav-------------------*/
+nav ul {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    border: none;
+}
+
+/*-------------------Home-------------------*/
+.btn-home {
+    background-color: rgb(126, 2, 154);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.btn-home:hover {
+    background-color: rgb(208, 0, 255);
+    transform: scale(1.1);
+}
+
+/*-------------------Search-------------------*/
+.btn-outline-secondary:hover {
+    background-color: rgb(158, 1, 255);
+    color: white;
+}
+
+.search-bar {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.artist-card p {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.artist-card img {
+    width: 200px;
+    height: 200px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.artist-card:hover img {
+    transform: scale(1.1);
+    
+}
+
+.artist-card.active img {
+    filter: brightness(0.5);
+}

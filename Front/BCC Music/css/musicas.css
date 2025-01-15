@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Encode+Sans+Expanded:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"');
+
+*{ 
+    font-family: 'Encode Sans Expanded', 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*-------------------Header-------------------*/
+header {
+    background-color: black;
+    padding: 5px 0;
+    border-bottom: solid 1px rgb(251, 251, 251);
+    box-shadow: 0 4px 6px rgba(25, 24, 24, 0.3);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+header h1 {
+    color: rgb(225, 126, 247);
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+header h1 span {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/*-------------------NPage-------------------*/
+#next-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+#next-page-btn.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+
+/*-------------------Home-------------------*/
+.btn-home {
+    background-color: rgb(126, 2, 154);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.btn-home:hover {
+    background-color: rgb(208, 0, 255);
+    transform: scale(1.1);
+}
+
+/*-------------------Search-------------------*/
+.btn-outline-secondary:hover {
+    background-color: rgb(158, 1, 255);
+    color: white;
+}
+
+.section-title {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.card {
+    background-color: #2e2e2e;
+    border: none;
+    border-radius: 10px;
+}
+.card img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.card-body {
+    padding: 10px;
+}
+.btn-play {
+    background-color: #1db954;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: inline;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+.btn-play svg {
+    color: white;
+}
+.btn-play:hover {
+    background-color: #1ed760;
+}

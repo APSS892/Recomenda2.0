@@ -2,6 +2,14 @@ let currentPage = 0; // Página inicial
 let pageSize = 30;   // Número de artistas por página
 let totalPages = 0;  // Total de páginas
 let currentGenre = ''; // Gênero atual selecionado
+let selectedArtists = []; // Lista de IDs dos artistas selecionados
+
+// Função para resetar seleções
+function resetarSelecoes() {
+    selectedArtists = []; // Limpa a lista de artistas selecionados
+    const artistCards = document.querySelectorAll('.artist-card.active');
+    artistCards.forEach(card => card.classList.remove('active')); // Remove a classe 'active'
+}
 
 // Função para carregar os gêneros
 async function carregarGeneros() {
@@ -22,17 +30,15 @@ async function carregarGeneros() {
         const generoContainer = document.getElementById('genero-buttons');
         generoContainer.innerHTML = "";
 
-        // Botão para exibir todos os artistas, sem filtro de gênero
         const allGenresButton = document.createElement('button');
         allGenresButton.classList.add('btn', 'btn-outline-secondary', 'm-1');
         allGenresButton.textContent = "Todas as Músicas";
         allGenresButton.addEventListener('click', () => {
-            // Ao clicar, carrega os artistas sem filtro de gênero
-            currentGenre = ''; // Reseta o filtro de gênero
-            currentPage = 0;   // Reinicia a página ao trocar de gênero
-            carregarArtistas(); // Carrega os artistas sem filtro
-            totalPages = 0;     // Reinicia a quantidade de páginas
-            atualizarBotoesNavegacao(); // Atualiza os botões de navegação
+            currentGenre = '';
+            currentPage = 0;
+            carregarArtistas();
+            totalPages = 0;
+            atualizarBotoesNavegacao();
         });
         generoContainer.appendChild(allGenresButton);
 
@@ -42,12 +48,11 @@ async function carregarGeneros() {
                 button.classList.add('btn', 'btn-outline-secondary', 'm-1');
                 button.textContent = genero.nome;
                 button.addEventListener('click', () => {
-                    // Ao clicar, filtra os artistas pelo gênero
                     currentGenre = genero.nome;
-                    currentPage = 0;   // Reinicia a página ao mudar de gênero
-                    carregarArtistas(); // Carrega os artistas filtrados
-                    totalPages = 0;     // Reinicia a quantidade de páginas
-                    atualizarBotoesNavegacao(); // Atualiza os botões de navegação
+                    currentPage = 0;
+                    carregarArtistas();
+                    totalPages = 0;
+                    atualizarBotoesNavegacao();
                 });
                 generoContainer.appendChild(button);
             });
@@ -59,10 +64,9 @@ async function carregarGeneros() {
     }
 }
 
-// Função para carregar artistas com base no nome do artista
+// Função para carregar artistas
 async function carregarArtistas(nomeArtista = '') {
     try {
-        // Se um nome de artista for fornecido, filtra os artistas por esse nome
         const url = nomeArtista
             ? `http://localhost:8080/artistas/artistasapi/nome?nome=${nomeArtista}&page=${currentPage}&size=${pageSize}`
             : (currentGenre
@@ -83,11 +87,11 @@ async function carregarArtistas(nomeArtista = '') {
         console.log("Dados recebidos:", data);
 
         const artistas = data.artistas;
-        totalPages = data.totalPages; // Atualiza o número total de páginas
-        currentPage = data.currentPage; // Página atual
+        totalPages = data.totalPages;
+        currentPage = data.currentPage;
 
         const artistasContainer = document.getElementById('artist-cards');
-        artistasContainer.innerHTML = ""; // Limpa o container antes de adicionar os novos artistas
+        artistasContainer.innerHTML = "";
 
         if (Array.isArray(artistas)) {
             artistas.forEach(artistaObj => {
@@ -98,6 +102,10 @@ async function carregarArtistas(nomeArtista = '') {
 
                 const card = document.createElement('div');
                 card.classList.add('artist-card', 'text-center');
+                card.dataset.id = artista.id;
+
+               
+                card.addEventListener('click', () => selecionarArtista(card));
 
                 const img = document.createElement('img');
                 img.src = artista.picture ? artista.picture : "https://via.placeholder.com/150";
@@ -107,103 +115,85 @@ async function carregarArtistas(nomeArtista = '') {
                 const p = document.createElement('p');
                 p.textContent = artista.nome || "Artista Desconhecido";
 
+                
+                img.addEventListener('click', event => {
+                    event.stopPropagation();
+                    selecionarArtista(card);
+                });
+
                 card.appendChild(img);
                 card.appendChild(p);
                 col.appendChild(card);
                 artistasContainer.appendChild(col);
             });
 
-            // Exibe a quantidade de páginas
             exibirQuantidadePaginas();
-            
-            // Atualizar visibilidade dos botões de navegação
             atualizarBotoesNavegacao();
         } else {
             console.error('A resposta da API não contém um array de artistas:', artistas);
         }
+
+        resetarSelecoes();
+
     } catch (error) {
         console.error("Erro ao carregar artistas:", error);
     }
 }
 
-// Função para buscar artistas ao digitar na barra de pesquisa
-document.querySelector('.search-bar').addEventListener('input', (event) => {
-    const nomeArtista = event.target.value.trim(); // Pega o valor digitado na pesquisa
-    currentPage = 0;  // Reinicia a página ao fazer uma nova busca
-    carregarArtistas(nomeArtista); // Chama a função de carregar artistas com o nome filtrado
-    totalPages = 0;  // Reinicia o total de páginas
-    atualizarBotoesNavegacao(); // Atualiza os botões de navegação
-});
+function selecionarArtista(card) {
+    const artistId = card.dataset.id;
 
-// Função para exibir a quantidade de páginas
+    if (card.classList.contains('active')) {
+        card.classList.remove('active');
+        selectedArtists = selectedArtists.filter(id => id !== artistId);
+    } else {
+        if (selectedArtists.length < 5) {
+            card.classList.add('active');
+            selectedArtists.push(artistId);
+        }
+    }
+
+    if (selectedArtists.length === 5) {
+        const queryString = selectedArtists.map(id => `id=${id}`).join('&');
+        window.location.href = `musics.html?${queryString}`;
+    }
+}
+
 function exibirQuantidadePaginas() {
     const paginasContainer = document.getElementById('quantidade-paginas');
     paginasContainer.textContent = `Página ${currentPage + 1} de ${totalPages}`;
 }
 
-// Função para navegar entre as páginas
 function navegarPagina(direcao) {
     if (direcao === 'anterior' && currentPage > 0) {
-        currentPage--; // Vai para a página anterior
+        currentPage--;
     } else if (direcao === 'proximo' && currentPage < totalPages - 1) {
-        currentPage++; // Vai para a próxima página
+        currentPage++;
     }
-    carregarArtistas(); // Carrega a página correspondente
+    carregarArtistas();
 }
 
-// Função para atualizar a visibilidade dos botões de navegação
 function atualizarBotoesNavegacao() {
     const prevButton = document.getElementById('prevButton');
     const nextButton = document.getElementById('nextButton');
 
-    // Verifica se os botões existem no DOM antes de alterar suas propriedades
     if (prevButton && nextButton) {
-        // Habilitar/desabilitar botões com base na página atual
-        prevButton.disabled = currentPage === 0; // Desabilitar o botão "Anterior" na primeira página
-        nextButton.disabled = currentPage === totalPages - 1; // Desabilitar o botão "Próximo" na última página
+        prevButton.disabled = currentPage === 0;
+        nextButton.disabled = currentPage === totalPages - 1;
     } else {
         console.error('Botões de navegação não encontrados.');
     }
 }
 
-// Função para validar a URL
-function isValidUrl(string) {
-    try {
-        new URL(string);
-        return true;
-    } catch (_) {
-        return false;  
-    }
-}
-
-// Função para habilitar/desabilitar o botão "Próximo"
-let selectedArtists = 0;
-
-document.addEventListener('click', event => {
-    if (event.target && event.target.classList.contains('artist-card')) {
-        const card = event.target;
-        card.classList.toggle('active');
-
-        if (card.classList.contains('active')) {
-            selectedArtists++;
-        } else {
-            selectedArtists--;
-        }
-
-        const nextButton = document.getElementById('next-page-btn');
-
-        if (selectedArtists >= 3) {
-            nextButton.classList.remove('disabled');
-            nextButton.href = "index.html";
-        } else {
-            nextButton.classList.add('disabled');
-            nextButton.href = "#";
-        }
-    }
+document.querySelector('.search-bar').addEventListener('input', (event) => {
+    const nomeArtista = event.target.value.trim();
+    currentPage = 0;
+    carregarArtistas(nomeArtista);
+    totalPages = 0;
+    atualizarBotoesNavegacao();
 });
 
-// Chama as funções para carregar os dados ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
     carregarGeneros();
-    carregarArtistas();  // Carrega os artistas sem filtro de gênero inicialmente
+    carregarArtistas();
 });

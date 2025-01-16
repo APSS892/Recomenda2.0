@@ -3,8 +3,10 @@ package bcc.ifsuldeminas.sistemaMusicas.service;
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Artista;
 import bcc.ifsuldeminas.sistemaMusicas.repository.ArtistaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.neo4j.core.Neo4jClient;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,75 +23,153 @@ public class ArtistaService {
     public List<Artista> listarArtistas() {
         return (List<Artista>) artistaRepository.findAll();
     }
-    /*public List<Artista> buscarArtistasPorGenero(String genero) {
-        return artistaRepository.findByGeneroIgnoreCase(genero);
-    }*/
-
-   /* public List<Artista> listarTodos() {
-        return artistaRepository.findAll();
-    }
-
-    public List<Artista> listarPorGenero(String genero) {
-        return artistaRepository.findByGenero(genero);
-    }*/
 
     @Autowired
     private Neo4jClient neo4jClient;
 
-    public List<Map<String, Object>> listarTodosArtistas() {
-        String query = """
-            MATCH (a:Artista)-[:ESTILO]->(g:Genero)
-                    OPTIONAL MATCH (a)-[:CRIADO_POR]->(m:Musica)
-                    WITH a, collect(g { .id, .nome, .spotifyId }) AS generos, collect(m { .id, .titulo, .spotifyId }) AS musicas
-                    RETURN a { .id, .nome, .spotifyId, .link, .picture, generos: generos, musicas: musicas } AS artista
-                
-        """;
+    public Map<String, Object> listarArtistasPaginados(int page, int size) {
+        // Calcula o número de elementos a serem pulados e limitados
+        int skip = page * size;
 
-        return (List<Map<String, Object>>) neo4jClient.query(query)
+        // Consulta Cypher para artistas com paginação
+        String query = """
+                    MATCH (a:Artista)-[:ESTILO]->(g:Genero)
+                            OPTIONAL MATCH (a)-[:CRIADO_POR]->(m:Musica)
+                            WITH a, collect(g { .id, .nome, .spotifyId }) AS generos, collect(m { .id, .titulo, .spotifyId }) AS musicas
+                            RETURN a { .id, .nome, .spotifyId, .link, .picture, generos: generos, musicas: musicas } AS artista
+                            SKIP $skip
+                            LIMIT $size
+                """;
+
+        // Executa a consulta com os parâmetros de paginação
+        List<Map<String, Object>> artistas = (List<Map<String, Object>>) neo4jClient.query(query)
+                .bind(skip).to("skip")  // Ajustando para usar o nome do parâmetro como string
+                .bind(size).to("size")  // Ajustando para usar o nome do parâmetro como string
                 .fetch()
                 .all();
+
+        // Consulta para contar o número total de artistas
+        String countQuery = """
+                    MATCH (a:Artista)-[:ESTILO]->(g:Genero)
+                            OPTIONAL MATCH (a)-[:CRIADO_POR]->(m:Musica)
+                            RETURN count(a) AS total
+                """;
+
+        Optional<Map<String, Object>> result = neo4jClient.query(countQuery)
+                .fetch()
+                .one();
+
+        long total = 0; // Inicialize a variável
+
+        if (result.isPresent()) {
+            total = (Long) result.get().get("total"); // Acessando o valor de "total" corretamente
+        } else {
+            // Caso não tenha retornado nenhum resultado
+            total = 0; // Ou qualquer valor padrão que faça sentido
+        }
+
+// Agora você pode calcular o total de páginas
+        int totalPages = (int) Math.ceil((double) total / size);
+
+// Retornando os dados no mapa
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("artistas", artistas); // Isso é assumido, deve ser a lista de artistas
+        resultMap.put("total", total); // Coloca o total calculado
+        resultMap.put("totalPages", totalPages); // Coloca o total de páginas
+        resultMap.put("currentPage", page); // Coloca a página atual
+
+        return resultMap;
     }
 
-    public List<Map<String, Object>> buscarArtistaPorNome(String nome) {
-        String query = """
-            MATCH (a:Artista)-[:ESTILO]->(g:Genero)
-            OPTIONAL MATCH (a)-[:CRIADO_POR]->(m:Musica)
-            WHERE toLower(a.nome) CONTAINS toLower($nome)
-            RETURN a { .id, .nome, .spotifyId, .link, .picture, 
-                       generos: collect(g { .id, .nome, .spotifyId }), 
-                       musicas: collect(m { .id, .titulo, .spotifyId }) } AS artista
-        """;
+    public Map<String, Object> listarArtistasPorGenero(String genero, int page, int size) {
+        int skip = page * size;
 
-        return (List<Map<String, Object>>) neo4jClient.query(query)
-                .bind(nome)
-                .to("nome")
+        // Consulta Cypher filtrando por gênero
+        String query = """
+        MATCH (a:Artista)-[:ESTILO]->(g:Genero)
+        WHERE g.nome = $genero
+        OPTIONAL MATCH (a)-[:CRIADO_POR]->(m:Musica)
+        WITH a, collect(g { .id, .nome, .spotifyId }) AS generos, collect(m { .id, .titulo, .spotifyId }) AS musicas
+        RETURN a { .id, .nome, .spotifyId, .link, .picture, generos: generos, musicas: musicas } AS artista
+        SKIP $skip
+        LIMIT $size
+    """;
+
+        List<Map<String, Object>> artistas = (List<Map<String, Object>>) neo4jClient.query(query)
+                .bind(genero).to("genero")
+                .bind(skip).to("skip")
+                .bind(size).to("size")
                 .fetch()
                 .all();
+
+        // Contar o total de artistas com esse gênero
+        String countQuery = """
+        MATCH (a:Artista)-[:ESTILO]->(g:Genero)
+        WHERE g.nome = $genero
+        RETURN count(a) AS total
+    """;
+
+        Optional<Map<String, Object>> result = neo4jClient.query(countQuery)
+                .bind(genero).to("genero")
+                .fetch()
+                .one();
+
+        long total = result.map(r -> (Long) r.get("total")).orElse(0L);
+        int totalPages = (int) Math.ceil((double) total / size);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("artistas", artistas);
+        resultMap.put("total", total);
+        resultMap.put("totalPages", totalPages);
+        resultMap.put("currentPage", page);
+
+        return resultMap;
     }
 
+    public Map<String, Object> listarArtistasPorNome(String nome, int page, int size) {
+        int skip = page * size;
 
-    public List<Map<String, Object>> listarGeneros() {
+        // Consulta Cypher para buscar artistas por nome com paginação
         String query = """
-            MATCH (g:Genero)
-            RETURN g { .id, .nome, .spotifyId } AS genero
+                MATCH (a:Artista)-[:ESTILO]->(g:Genero)
+                WHERE toLower(a.nome) CONTAINS toLower($nome)
+                OPTIONAL MATCH (a)-[:CRIADO_POR]->(m:Musica)
+                WITH a, collect(g { .id, .nome, .spotifyId }) AS generos, collect(m { .id, .titulo, .spotifyId }) AS musicas
+                RETURN a { .id, .nome, .spotifyId, .link, .picture, generos: generos, musicas: musicas } AS artista
+                SKIP $skip
+                LIMIT $size
         """;
 
-        return (List<Map<String, Object>>) neo4jClient.query(query)
+        // Executa a consulta Cypher com o nome e parâmetros de paginação
+        List<Map<String, Object>> artistas = (List<Map<String, Object>>) neo4jClient.query(query)
+                .bind(nome).to("nome")
+                .bind(skip).to("skip")
+                .bind(size).to("size")
                 .fetch()
                 .all();
-    }
 
-    public List<Map<String, Object>> buscarMusicasPorArtista(Long artistaId) {
-        String query = """
-            MATCH (a:Artista)-[:CRIADO_POR]->(m:Musica)
-            WHERE id(a) = $artistaId
-            RETURN m { .id, .titulo, .spotifyId, .preview, .link } AS musica
+        // Consulta para contar o total de artistas com esse nome
+        String countQuery = """
+                MATCH (a:Artista)-[:ESTILO]->(g:Genero)
+                WHERE toLower(a.nome) CONTAINS toLower($nome)
+                RETURN count(a) AS total
         """;
 
-        return (List<Map<String, Object>>) neo4jClient.query(query)
-                .bind(artistaId)
-                .to("artistaId")
+        Optional<Map<String, Object>> result = neo4jClient.query(countQuery)
+                .bind(nome).to("nome")
                 .fetch()
-                .all();
+                .one();
+
+        long total = result.map(r -> (Long) r.get("total")).orElse(0L);
+        int totalPages = (int) Math.ceil((double) total / size);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("artistas", artistas);
+        resultMap.put("total", total);
+        resultMap.put("totalPages", totalPages);
+        resultMap.put("currentPage", page);
+
+        return resultMap;
     }
+
 }

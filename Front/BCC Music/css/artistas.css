@@ -21,61 +21,6 @@ main {
     align-items: center;
     justify-content: center;
 }
-/********************************************/
-.carousel {
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    margin: 20px 0;
-}
-
-.carousel-track {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 10px;
-}
-
-.artist-card {
-    flex: 0 0 auto;
-    width: 200px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.artist-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.artist-name {
-    font-size: 18px;
-    margin: 5px 0;
-}
-
-.artist-genres {
-    font-size: 14px;
-    color: #666;
-}
-
-
-.carousel-track {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 10px;
-    width: 100%;
-}
 
 /*-------------------Header-------------------*/
 header {

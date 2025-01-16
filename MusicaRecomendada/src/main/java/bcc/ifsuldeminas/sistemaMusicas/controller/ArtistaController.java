@@ -2,8 +2,12 @@ package bcc.ifsuldeminas.sistemaMusicas.controller;
 
 
 import bcc.ifsuldeminas.sistemaMusicas.model.entities.Artista;
+import bcc.ifsuldeminas.sistemaMusicas.repository.ArtistaRepository;
 import bcc.ifsuldeminas.sistemaMusicas.service.ArtistaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,15 +23,48 @@ public class ArtistaController {
     @Autowired
     private ArtistaService artistaService;
 
+    @Autowired
+    private ArtistaRepository artistaRepository;
+
     @PostMapping
     public Artista criarArtista(@RequestBody Artista artista) {
         return artistaService.salvarArtista(artista);
     }
 
-    @GetMapping("/listar")
+    @GetMapping
     public List<Artista> listarArtistas() {
         return artistaService.listarArtistas();
     }
+
+    @GetMapping("/artistasapi")
+    public ResponseEntity<Map<String, Object>> listarArtistasPaginados(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "30") int size) {
+
+        Map<String, Object> artistas = artistaService.listarArtistasPaginados(page, size);
+        return ResponseEntity.ok(artistas);
+    }
+
+    @GetMapping("/artistasapi/genero")
+    public ResponseEntity<Map<String, Object>> listarArtistasPorGenero(
+            @RequestParam(value = "genero") String genero,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "30") int size) {
+
+        Map<String, Object> artistas = artistaService.listarArtistasPorGenero(genero, page, size);
+        return ResponseEntity.ok(artistas);
+    }
+
+    @GetMapping("/artistasapi/nome")
+    public ResponseEntity<Map<String, Object>> listarArtistasPorNome(
+            @RequestParam(value = "nome") String nome,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "30") int size) {
+
+        Map<String, Object> artistas = artistaService.listarArtistasPorNome(nome, page, size);
+        return ResponseEntity.ok(artistas);
+    }
+
 
     /*@GetMapping("/por-genero")
     public ResponseEntity<List<Artista>> buscarArtistasPorGenero(@RequestParam String genero) {
@@ -49,28 +86,4 @@ public class ArtistaController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(artistaDTOs);
     }*/
-
-    @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> listarTodosArtistas() {
-        List<Map<String, Object>> artistas = artistaService.listarTodosArtistas();
-        return ResponseEntity.ok(artistas);
-    }
-
-    @GetMapping("/buscar")
-    public ResponseEntity<List<Map<String, Object>>> buscarArtistaPorNome(@RequestParam String nome) {
-        List<Map<String, Object>> artistas = artistaService.buscarArtistaPorNome(nome);
-        return ResponseEntity.ok(artistas);
-    }
-
-    @GetMapping("/generos")
-    public ResponseEntity<List<Map<String, Object>>> listarGeneros() {
-        List<Map<String, Object>> generos = artistaService.listarGeneros();
-        return ResponseEntity.ok(generos);
-    }
-
-    @GetMapping("/{artistaId}/musicas")
-    public ResponseEntity<List<Map<String, Object>>> buscarMusicasPorArtista(@PathVariable Long artistaId) {
-        List<Map<String, Object>> musicas = artistaService.buscarMusicasPorArtista(artistaId);
-        return ResponseEntity.ok(musicas);
-    }
 }

@@ -103,11 +103,11 @@ public class UsuarioController {
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String nome, @RequestParam String senha) {
+    public ResponseEntity<?> login(@RequestParam String nome, @RequestParam String senha) {
         try {
-            boolean isLoggedIn = usuarioService.login(nome, senha);
-            if (isLoggedIn) {
-                return ResponseEntity.ok("Login realizado com sucesso!");
+            Long usuarioId = usuarioService.login(nome, senha);
+            if (usuarioId != null) {
+                return ResponseEntity.ok(usuarioId); // Retorna o ID do usuário
             } else {
                 return ResponseEntity.status(400).body("Login falhou.");
             }
@@ -117,6 +117,7 @@ public class UsuarioController {
             return ResponseEntity.status(500).body("Erro interno no servidor.");
         }
     }
+
     @PostMapping("/criar")
     public ResponseEntity<Playlist> criarPlaylist(@RequestParam String nome, @RequestParam String descricao) {
         Playlist playlist = playlistService.criarPlaylist(nome, descricao);
@@ -186,15 +187,30 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao remover música do usuário.");
         }
-    }
-    @GetMapping("/{id}/recomendacoes/artistas")
-    public ResponseEntity<?> recomendarMusicasPorArtista(@PathVariable Long id) {
-        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorArtista(id);
+    }/*
+    @GetMapping("/recomendacoes/musicas")
+    public ResponseEntity<?> recomendarMusicasPorArtistas(@RequestParam List<Long> artistasIds) {
+        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorArtistas(artistasIds);
         return ResponseEntity.ok(recomendacoes);
-    }
+    }*/
+
     @GetMapping("/{id}/recomendacoes/usuarios")
     public ResponseEntity<?> recomendarMusicasPorUsuarios(@PathVariable Long id) {
         List<Musica> recomendacoes = usuarioService.recomendarMusicasPorUsuarios(id);
+        return ResponseEntity.ok(recomendacoes);
+    }
+    @GetMapping("/recomendacoes/musica")
+    public ResponseEntity<?> recomendarMusicasPorArtistas(@RequestParam List<String> nome) {
+        if (nome == null || nome.isEmpty()) {
+            return ResponseEntity.badRequest().body("Nenhum nome de artista foi fornecido.");
+        }
+
+        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorNomes(nome);
+
+        if (recomendacoes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma música encontrada para os artistas fornecidos.");
+        }
+
         return ResponseEntity.ok(recomendacoes);
     }
 

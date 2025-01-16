@@ -62,13 +62,14 @@ public class UsuarioService {
         Usuario usuario = new Usuario(nome, dataNascimento, genero, senha);
         return usuarioRepository.save(usuario);
     }
-    public boolean login(String nome, String senha) {
+    public Long login(String nome, String senha) {
         Usuario usuario = usuarioRepository.findByNomeAndSenha(nome, senha);
         if (usuario == null) {
             throw new IllegalArgumentException("Nome ou senha incorretos.");
         }
-        return true;
+        return usuario.getId(); // Retorna o ID do usuário
     }
+
     public void conectarPlaylistAoUsuario(Long usuarioId, Playlist playlist) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
@@ -124,23 +125,23 @@ public class UsuarioService {
 
 
 
-    public List<Musica> recomendarMusicasPorArtista(Long usuarioId) {
+
+    public List<Musica> recomendarMusicasPorArtistas(List<Long> artistasIds) {
         List<Musica> recomendacoes = new ArrayList<>();
 
         try (Session session = driver.session()) {
             String query = """
-            MATCH (u:Usuario)-[:ADICIONOU]->(m:Musica)-[:CRIADO_POR]->(a:Artista)<-[:CRIADO_POR]-(m2:Musica)
-            WHERE id(u) = $usuarioId AND NOT (u)-[:ADICIONOU]->(m2)
-            RETURN DISTINCT m2
-            ORDER BY rand()  // Ordena os resultados de forma aleatória
-            LIMIT 3
-            """;
+        MATCH (a:Artista)<-[:CRIADO_POR]-(m:Musica)
+        WHERE id(a) IN $artistasIds
+        RETURN DISTINCT m
+        ORDER BY rand()  // Ordena os resultados de forma aleatória
+        LIMIT 10
+        """;
 
-            Result result = session.run(query, Values.parameters("usuarioId", usuarioId));
+            Result result = session.run(query, Values.parameters("artistasIds", artistasIds));
 
             result.forEachRemaining(record -> {
-
-                Node node = record.get("m2").asNode();
+                Node node = record.get("m").asNode();
                 Musica musica = new Musica();
                 musica.setId(node.id());
                 musica.setTitulo(node.get("titulo").asString(null));
@@ -153,6 +154,36 @@ public class UsuarioService {
 
         return recomendacoes;
     }
+    public List<Musica> recomendarMusicasPorNomes(List<String> artistasNomes) {
+        List<Musica> recomendacoes = new ArrayList<>();
+
+        try (Session session = driver.session()) {
+            String query = """
+        MATCH (a:Artista)<-[:CRIADO_POR]-(m:Musica)
+        WHERE a.nome IN $artistasNomes
+        RETURN DISTINCT m
+        ORDER BY rand()  // Ordena os resultados de forma aleatória
+        LIMIT 10
+        """;
+
+            Result result = session.run(query, Values.parameters("artistasNomes", artistasNomes));
+
+            result.forEachRemaining(record -> {
+                Node node = record.get("m").asNode();
+                Musica musica = new Musica();
+                musica.setId(node.id());
+                musica.setTitulo(node.get("titulo").asString(null));
+                musica.setSpotifyId(node.get("spotifyId").asString(null));
+                musica.setPreview(node.get("preview").asString(null));
+                musica.setLink(node.get("link").asString(null));
+                recomendacoes.add(musica);
+            });
+        }
+
+        return recomendacoes;
+    }
+
+
     public List<Musica> recomendarMusicasPorUsuarios(Long usuarioId) {
         List<Musica> recomendacoes = new ArrayList<>();
 

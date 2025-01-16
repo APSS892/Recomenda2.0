@@ -11,6 +11,14 @@ function resetarSelecoes() {
     artistCards.forEach(card => card.classList.remove('active')); // Remove a classe 'active'
 }
 
+const userId = localStorage.getItem("userId");
+
+if (userId) {
+    console.log("ID do usuário:", userId);
+} else {
+    console.log("Usuário não está logado.");
+}
+
 // Função para carregar os gêneros
 async function carregarGeneros() {
     try {
@@ -141,23 +149,24 @@ async function carregarArtistas(nomeArtista = '') {
 }
 
 function selecionarArtista(card) {
-    const artistId = card.dataset.id;
+    const artistName = card.querySelector('p').textContent; // Obtém o nome do artista
 
     if (card.classList.contains('active')) {
         card.classList.remove('active');
-        selectedArtists = selectedArtists.filter(id => id !== artistId);
+        selectedArtists = selectedArtists.filter(name => name !== artistName);
     } else {
         if (selectedArtists.length < 5) {
             card.classList.add('active');
-            selectedArtists.push(artistId);
+            selectedArtists.push(artistName);
         }
     }
 
     if (selectedArtists.length === 5) {
-        const queryString = selectedArtists.map(id => `id=${id}`).join('&');
-        window.location.href = `musics.html?${queryString}`;
+        const queryString = selectedArtists.map(name => `nome=${encodeURIComponent(name)}`).join('&');
+        window.location.href = `musics.html?${queryString}`; // Redireciona com os nomes
     }
 }
+
 
 function exibirQuantidadePaginas() {
     const paginasContainer = document.getElementById('quantidade-paginas');

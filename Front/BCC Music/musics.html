@@ -29,58 +29,13 @@
         </div>
 
         <!-- Recently Played -->
-        <div class="mb-5">
-            <h2 class="section-title">Recently Played</h2>
-            <div class="row">
-                <div class="col-6 col-md-3 mb-4">
-                    <div class="card">
-                        <img src="./Imagens/Musics/imagem.jpg " class="card-img-top" alt="Album">
-                        <div class="card-body text-center">
-                            <p class="card-text">Album 1</p>
-                            <button class="btn-play">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                    <path d="M11.596 8.697l-6.363 3.692A.5.5 0 0 1 4 12.308V3.692a.5.5 0 0 1 .757-.424l6.363 3.692a.5.5 0 0 1 0 .847z"/>
-                                </svg>
-                            </button>
-                            <button class="btn-play">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                                </svg>                                                                                                    
-                            </button>
-                            <button class="btn-play">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path d="M3 9a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm5 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm5 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3 mb-4">
-                    <div class="card">
-                        <img src="./Imagens/Musics/imagem1.jpg" class="card-img-top" alt="Album">
-                        <div class="card-body text-center">
-                            <p class="card-text">Album 2</p>
-                            <button class="btn-play">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                    <path d="M11.596 8.697l-6.363 3.692A.5.5 0 0 1 4 12.308V3.692a.5.5 0 0 1 .757-.424l6.363 3.692a.5.5 0 0 1 0 .847z"/>
-                                </svg>
-                            </button>
-                            <button class="btn-play">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
-                                </svg>                                                                                                    
-                            </button>
-                            <button class="btn-play">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path d="M3 9a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm5 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm5 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Adicione mais cards aqui -->
+        
+            <div class="mb-5">
+                <h2 class="section-title">Recomndações pelos artistas</h2>
+                <div id="musicas-container" class="row"></div>
             </div>
-        </div>
+            
+       
 
         <!-- Downloaded -->
         <div>
@@ -137,5 +92,6 @@
         </div>
 
     <script src="./script/js.js"></script>
+    <script src="js/musics.js"></script>
 </body>
 </html>

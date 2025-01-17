@@ -123,9 +123,9 @@ public class UsuarioController {
         Playlist playlist = playlistService.criarPlaylist(nome, descricao);
         return ResponseEntity.ok(playlist);
     }
-    @PostMapping("/{id}/criar")
+    @PostMapping("/criarplaylist")
     public ResponseEntity<?> criarPlaylist(
-            @PathVariable Long id,
+            @RequestParam Long id,
             @RequestParam String nome,
             @RequestParam String descricao) {
         try {
@@ -148,11 +148,11 @@ public class UsuarioController {
         Playlist playlist = playlistService.adicionarMusicaNaPlaylist(playlistId, musicaId);
         return ResponseEntity.ok(playlist);
     }
-    @PostMapping("/{id}/adiciona/{playlistId}/adicionarMusica/{musicaId}")
+    @PostMapping("/adiciona/adicionarMusica")
     public ResponseEntity<?> adicionarMusicaNaPlaylist(
-            @PathVariable Long id,
-            @PathVariable Long playlistId,
-            @PathVariable Long musicaId) {
+            @RequestParam Long id,
+            @RequestParam Long playlistId,
+            @RequestParam Long musicaId) {
         try {
               Playlist playlist = playlistService.adicionarMusicaNaPlaylistDoUsuario(id, playlistId, musicaId);
             return ResponseEntity.ok(playlist);
@@ -180,10 +180,10 @@ public class UsuarioController {
         List<Musica> musicas = usuarioService.buscarMusicasAdicionadasPorUsuario(id);
         return ResponseEntity.ok(musicas);
     }
-    @DeleteMapping("/{id}/removerMusica/{musicaId}")
+    @DeleteMapping("/removerMusica")
     public ResponseEntity<?> removerMusicaDoUsuario(
-            @PathVariable Long id,
-            @PathVariable Long musicaId) {
+            @RequestParam Long id,
+            @RequestParam Long musicaId) {
         try {
             usuarioService.removerMusicaDoUsuario(id, musicaId);
             return ResponseEntity.ok("Música removida com sucesso do usuário.");

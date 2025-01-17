@@ -33,13 +33,13 @@ async function tocarMusica(musicaId) {
 
 
         if (!response.ok) {
-            throw new Error('Erro ao registrar música tocada.');
+            throw new Error('Erro ao registrar musica.');
         }
 
-        alert('Música tocada com sucesso!');
+        alert('Música salva com sucesso!');
     } catch (error) {
         console.error('Erro ao tocar música:', error);
-        alert('Erro ao tocar música. Tente novamente mais tarde.');
+        alert('Erro ao salvar musica.');
     }
 }
 
@@ -223,4 +223,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Carrega as músicas ao carregar a página
-document.addEventListener('DOMContentLoaded', carregarMusicas);
+//document.addEventListener('DOMContentLoaded', carregarMusicas);

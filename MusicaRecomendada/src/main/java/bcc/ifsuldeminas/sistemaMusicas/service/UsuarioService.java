@@ -7,12 +7,14 @@ import bcc.ifsuldeminas.sistemaMusicas.repository.MusicaRepository;
 import bcc.ifsuldeminas.sistemaMusicas.repository.UsuarioRepository;
 import org.neo4j.driver.types.Node;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -21,9 +23,10 @@ public class UsuarioService {
     @Autowired
     private MusicaRepository musicaRepository;
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, Driver driver) {
+    public UsuarioService(UsuarioRepository usuarioRepository, Driver driver, Neo4jClient neo4jClient) {
         this.usuarioRepository = usuarioRepository;
         this.driver = driver;
+        this.neo4jClient = neo4jClient;
     }
 
     // Listar todos os usuários
@@ -182,6 +185,36 @@ public class UsuarioService {
 
         return recomendacoes;
     }
+    private final Neo4jClient neo4jClient;
+
+    public List<Musica> buscarMusicasAdicionadasPorUsuario(Long userId) {
+
+        List<Musica> recomendacoes1 = new ArrayList<>();
+
+        try (Session session1 = driver.session()) {
+            String query = """
+        MATCH (u:Usuario)-[:ADICIONOU]->(m:Musica)
+        WHERE id(u) = $userId
+        RETURN m
+        """;
+
+            Result result = session1.run(query, Values.parameters("userId", userId));
+
+            result.forEachRemaining(record -> {
+                Node node = record.get("m").asNode();
+                Musica musica = new Musica();
+                musica.setId(node.id());
+                musica.setTitulo(node.get("titulo").asString(null));
+                musica.setSpotifyId(node.get("spotifyId").asString(null));
+                musica.setPreview(node.get("preview").asString(null));
+                musica.setLink(node.get("link").asString(null));
+                recomendacoes1.add(musica);
+            });
+        }
+
+        return recomendacoes1;
+    }
+
 
 
     public List<Musica> recomendarMusicasPorUsuarios(Long usuarioId) {

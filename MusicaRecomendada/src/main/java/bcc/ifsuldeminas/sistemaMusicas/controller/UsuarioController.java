@@ -162,10 +162,10 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar música na playlist.");
         }
     }
-    @PostMapping("/{id}/gostaMusica/{musicaId}")
+    @PostMapping("/gostaMusica")
     public ResponseEntity<?> adicionarMusicaAoUsuario(
-            @PathVariable Long id,
-            @PathVariable Long musicaId) {
+            @RequestParam Long id,
+            @RequestParam Long musicaId) {
         try {
             Usuario usuario = usuarioService.adicionarMusicaAoUsuario(id, musicaId);
             return ResponseEntity.ok(usuario);
@@ -174,6 +174,11 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar música ao usuário.");
         }
+    }
+    @GetMapping("/musicasAdicionadas")
+    public ResponseEntity<List<Musica>> buscarMusicasAdicionadas(@RequestParam Long id) {
+        List<Musica> musicas = usuarioService.buscarMusicasAdicionadasPorUsuario(id);
+        return ResponseEntity.ok(musicas);
     }
     @DeleteMapping("/{id}/removerMusica/{musicaId}")
     public ResponseEntity<?> removerMusicaDoUsuario(
@@ -194,8 +199,8 @@ public class UsuarioController {
         return ResponseEntity.ok(recomendacoes);
     }*/
 
-    @GetMapping("/{id}/recomendacoes/usuarios")
-    public ResponseEntity<?> recomendarMusicasPorUsuarios(@PathVariable Long id) {
+    @GetMapping("/recomendacoes/usuarios")
+    public ResponseEntity<?> recomendarMusicasPorUsuarios(@RequestParam Long id) {
         List<Musica> recomendacoes = usuarioService.recomendarMusicasPorUsuarios(id);
         return ResponseEntity.ok(recomendacoes);
     }

@@ -1,6 +1,8 @@
+/* Importação de fontes */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Encode+Sans+Expanded:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"');
 
+/* Reset geral */
 *{ 
     font-family: 'Encode Sans Expanded', 'Poppins', sans-serif;
     box-sizing: border-box;
@@ -82,10 +84,9 @@ nav ul li a {
     text-decoration: none;
     padding: 10px 15px;
     border-radius: 8px;
-    transition: background-color 0.s, transform 0.3s;
+    transition: background-color 0.3s, transform 0.3s ease;
     display: flex;
     align-items: center;
-    border: none;
 }
 
 /*-------------------Home-------------------*/
@@ -120,22 +121,122 @@ nav ul li a {
     border-radius: 20px;
 }
 
-.artist-card p {
-    margin-top: 10px;
-    font-size: 18px;
+/*-------------------Artist Card-------------------*/
+
+/* Cartão do artista */
+.artist-card {
+    position: relative;
+    width: 100%;
+    max-width: 240px;
+    margin: 15px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    border: 2px solid #ddd;
+    background-color: #f8f8f8;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
 }
 
+.artist-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Efeito para quando o artista é selecionado */
+.artist-card.active {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Imagem do artista */
 .artist-card img {
     width: 200px;
     height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
     transition: transform 0.3s ease, filter 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Efeito de brilho ao passar o mouse na imagem */
 .artist-card:hover img {
     transform: scale(1.1);
-    
 }
 
 .artist-card.active img {
     filter: brightness(0.5);
+}
+
+/* Nome do artista */
+.artist-card p {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+/* Efeito de cor ao passar o mouse no nome */
+.artist-card:hover p {
+    color: #007bff;
+}
+
+#selected-artists-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#selected-artists-list ul li {
+    background-color: #f1f1f1;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    width: auto;
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#selected-artists-list ul li:hover {
+    transform: scale(1.05); /* Efeito de aumentar ao passar o mouse */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+#selected-artists-list ul li {
+    background-color: #f1f1f1;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Gêneros e botões */
+#genero-buttons button {
+    margin: 5px;
+    font-weight: 600;
+}
+
+#quantidade-paginas {
+    font-weight: 600;
+    color: #555;
+}
+
+/* Barra de pesquisa */
+.search-bar {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
+/* Efeito de hover nos botões de gênero */
+#genero-buttons button:hover {
+    background-color: rgb(158, 1, 255);
+    color: white;
 }

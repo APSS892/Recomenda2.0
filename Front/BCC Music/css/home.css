@@ -7,7 +7,7 @@
 }
 
 html, body {
-    background-color: #121212;
+    background-color: white;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -27,7 +27,7 @@ header {
     background-color: black;
     padding: 5px 0;
     border-bottom: solid 1px rgb(251, 251, 251);
-    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(25, 24, 24, 0.3);
 }
 
 .header-container {
@@ -38,7 +38,7 @@ header {
 }
 
 header h1 {
-    color: rgb(126, 2, 154);
+    color: rgb(225, 126, 247);
     font-size: 1.8rem;
     font-weight: 500;
 }
@@ -48,35 +48,81 @@ header h1 span {
     font-weight: 500;
 }
 
-.navbar {
-    background-color: #1DB954;
+/*-------------------NPage-------------------*/
+#next-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
 }
 
-.navbar-brand {
+#next-page-btn.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+
+/*-------------------Home-------------------*/
+.btn-home {
+    background-color: rgb(126, 2, 154);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
 }
 
-.main-container {
-    padding: 20px;
+.btn-home:hover {
+    background-color: rgb(208, 0, 255);
+    transform: scale(1.1);
 }
 
+/*-------------------Search-------------------*/
+.btn-outline-secondary:hover {
+    background-color: rgb(158, 1, 255);
+    color: white;
+}
+
+.section-title {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 .card {
-    background-color: #181818;
+    background-color: #000000;
+    color: rgb(255, 255, 255);
     border: none;
+    border-radius: 10px;
 }
-
-.card-title, .card-text {
-    color: #fff;
+.card img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
-
-.btn-primary {
-    background-color: #1DB954;
-    border: none;
-}
-
-footer {
-    background-color: #282828;
+.card-body {
     padding: 10px;
-    text-align: center;
-    color: #b3b3b3;
+}
+.btn-play {
+    background-color: #b91d75;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: inline;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+.btn-play svg {
+    color: white;
+}
+.btn-play:hover {
+    background-color: #1ed760;
 }

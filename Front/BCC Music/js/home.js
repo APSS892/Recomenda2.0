@@ -21,16 +21,18 @@ async function carregarMusicas() {
         const musicasContainer = document.getElementById('musicas-container');
         musicasContainer.innerHTML = ''; // Limpa o container
 
-        musicas.forEach(musica => {
+        musicas.forEach(musicaInfo => {
+            const musica = musicaInfo.musica;  // Extraindo a música
+            const nomeArtista = musicaInfo.artistaNome || 'Artista Desconhecido';  // Extraindo o nome do artista
+
             const col = document.createElement('div');
             col.classList.add('col-md-4', 'mb-4');
 
             const card = `
                 <div class="card">
-                    <img src="${musica.albumArt || 'https://via.placeholder.com/300x200'}" class="card-img-top" alt="Album Art">
                     <div class="card-body">
                         <h5 class="card-title">${musica.titulo}</h5>
-                        <p class="card-text">${musica.artista || 'Artista Desconhecido'}</p>
+                        <p class="card-text">${nomeArtista}</p>
                         <a href="${musica.preview || '#'}" class="btn btn-primary" target="_blank">Play</a>
                         <button class="btn btn-danger mt-2 btn-excluir" data-musica-id="${musica.id}">Excluir</button>
                     </div>

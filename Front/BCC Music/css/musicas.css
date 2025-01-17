@@ -97,7 +97,8 @@ header h1 span {
     font-weight: bold;
 }
 .card {
-    background-color: #2e2e2e;
+    background-color: #000000;
+    color: rgb(255, 255, 255);
     border: none;
     border-radius: 10px;
 }
@@ -109,7 +110,7 @@ header h1 span {
     padding: 10px;
 }
 .btn-play {
-    background-color: #1db954;
+    background-color: #b91d75;
     border: none;
     border-radius: 50%;
     width: 40px;

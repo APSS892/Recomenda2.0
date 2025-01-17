@@ -11,9 +11,7 @@ import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -138,7 +136,7 @@ public class UsuarioService {
         WHERE id(a) IN $artistasIds
         RETURN DISTINCT m
         ORDER BY rand()  // Ordena os resultados de forma aleatória
-        LIMIT 10
+        LIMIT 12
         """;
 
             Result result = session.run(query, Values.parameters("artistasIds", artistasIds));
@@ -157,58 +155,86 @@ public class UsuarioService {
 
         return recomendacoes;
     }
-    public List<Musica> recomendarMusicasPorNomes(List<String> artistasNomes) {
-        List<Musica> recomendacoes = new ArrayList<>();
+    public List<Map<String, Object>> recomendarMusicasPorNomes(List<String> artistasNomes) {
+        List<Map<String, Object>> recomendacoes = new ArrayList<>();
 
         try (Session session = driver.session()) {
+            // Consulta Cypher corrigida com WHERE após o UNWIND
             String query = """
         MATCH (a:Artista)<-[:CRIADO_POR]-(m:Musica)
-        WHERE a.nome IN $artistasNomes
-        RETURN DISTINCT m
-        ORDER BY rand()  // Ordena os resultados de forma aleatória
-        LIMIT 10
+                    WHERE a.nome IN $artistasNomes
+                    WITH a, m
+                    ORDER BY rand()  // Ordena as músicas aleatoriamente para cada artista
+                    WITH a, collect(m)[..3] AS musicasPorArtista  // Pega até 3 músicas aleatórias de cada artista
+                    UNWIND musicasPorArtista AS musica
+                    RETURN DISTINCT musica, a.nome AS artistaNome
+                    LIMIT 15
         """;
 
+            // Executa a consulta e passa os nomes dos artistas como parâmetro
             Result result = session.run(query, Values.parameters("artistasNomes", artistasNomes));
 
+            // Processa os resultados retornados
             result.forEachRemaining(record -> {
-                Node node = record.get("m").asNode();
-                Musica musica = new Musica();
-                musica.setId(node.id());
-                musica.setTitulo(node.get("titulo").asString(null));
-                musica.setSpotifyId(node.get("spotifyId").asString(null));
-                musica.setPreview(node.get("preview").asString(null));
-                musica.setLink(node.get("link").asString(null));
-                recomendacoes.add(musica);
+                Node node = record.get("musica").asNode();  // Acessando a música
+                String artistaNome = record.get("artistaNome").asString();
+
+                if (node != null) {  // Verifica se o nó da música existe
+                    Musica musica = new Musica();
+                    musica.setId(node.id());
+                    musica.setTitulo(node.get("titulo").asString(null));
+                    musica.setSpotifyId(node.get("spotifyId").asString(null));
+                    musica.setPreview(node.get("preview").asString(null));
+                    musica.setLink(node.get("link").asString(null));
+
+                    Map<String, Object> musicaInfo = new HashMap<>();
+                    musicaInfo.put("musica", musica);
+                    musicaInfo.put("artistaNome", artistaNome);
+
+                    recomendacoes.add(musicaInfo);
+                }
             });
         }
 
         return recomendacoes;
     }
+
     private final Neo4jClient neo4jClient;
 
-    public List<Musica> buscarMusicasAdicionadasPorUsuario(Long userId) {
 
-        List<Musica> recomendacoes1 = new ArrayList<>();
+    public List<Map<String, Object>> buscarMusicasAdicionadasPorUsuario(Long userId) {
+        List<Map<String, Object>> recomendacoes1 = new ArrayList<>();
 
         try (Session session1 = driver.session()) {
+            // Alteração da consulta para incluir a busca pelo nome do artista
             String query = """
-        MATCH (u:Usuario)-[:ADICIONOU]->(m:Musica)
-        WHERE id(u) = $userId
-        RETURN m
+                MATCH (u:Usuario)-[:ADICIONOU]->(m:Musica)-[:CRIADO_POR]->(a:Artista)
+                WHERE id(u) = $userId
+                RETURN m, a
         """;
 
             Result result = session1.run(query, Values.parameters("userId", userId));
 
             result.forEachRemaining(record -> {
-                Node node = record.get("m").asNode();
+                Node nodeMusica = record.get("m").asNode();
+                Node nodeArtista = record.get("a").asNode();
+
                 Musica musica = new Musica();
-                musica.setId(node.id());
-                musica.setTitulo(node.get("titulo").asString(null));
-                musica.setSpotifyId(node.get("spotifyId").asString(null));
-                musica.setPreview(node.get("preview").asString(null));
-                musica.setLink(node.get("link").asString(null));
-                recomendacoes1.add(musica);
+                musica.setId(nodeMusica.id());
+                musica.setTitulo(nodeMusica.get("titulo").asString(null));
+                musica.setSpotifyId(nodeMusica.get("spotifyId").asString(null));
+                musica.setPreview(nodeMusica.get("preview").asString(null));
+                musica.setLink(nodeMusica.get("link").asString(null));
+
+                // Obtendo o nome do artista
+                String nomeArtista = nodeArtista.get("nome").asString("Artista Desconhecido");
+
+                // Map para retornar ao frontend com a música e o nome do artista
+                Map<String, Object> musicaInfo = new HashMap<>();
+                musicaInfo.put("musica", musica);         // Adiciona a música
+                musicaInfo.put("artistaNome", nomeArtista); // Adiciona o nome do artista
+
+                recomendacoes1.add(musicaInfo);
             });
         }
 
@@ -217,35 +243,44 @@ public class UsuarioService {
 
 
 
-    public List<Musica> recomendarMusicasPorUsuarios(Long usuarioId) {
-        List<Musica> recomendacoes = new ArrayList<>();
+    public List<Map<String, Object>> recomendarMusicasPorUsuarios(Long usuarioId) {
+        List<Map<String, Object>> recomendacoes = new ArrayList<>();
 
         try (Session session = driver.session()) {
             String query = """
-            MATCH (u:Usuario)-[:ADICIONOU]->(m:Musica)<-[:ADICIONOU]-(outro:Usuario)-[:ADICIONOU]->(m2:Musica)
-            WHERE id(u) = $usuarioId AND NOT (u)-[:ADICIONOU]->(m2)
-            RETURN DISTINCT m2
-            ORDER BY rand()
-            LIMIT 10
-            """;
+                    MATCH (u:Usuario)-[:ADICIONOU]->(m:Musica)<-[:ADICIONOU]-(outro:Usuario)-[:ADICIONOU]->(m2:Musica)
+                            MATCH (m2)-[:CRIADO_POR]->(a:Artista)
+                            WHERE id(u) = $usuarioId AND NOT (u)-[:ADICIONOU]->(m2)
+                            RETURN DISTINCT m2, a.nome AS artistaNome
+                            ORDER BY rand()
+                            LIMIT 12
+        """;
 
             Result result = session.run(query, Values.parameters("usuarioId", usuarioId));
 
             result.forEachRemaining(record -> {
-
                 Node node = record.get("m2").asNode();
+                String artistaNome = record.get("artistaNome").asString("Artista Desconhecido");
+
                 Musica musica = new Musica();
                 musica.setId(node.id());
                 musica.setTitulo(node.get("titulo").asString(null));
                 musica.setSpotifyId(node.get("spotifyId").asString(null));
                 musica.setPreview(node.get("preview").asString(null));
                 musica.setLink(node.get("link").asString(null));
-                recomendacoes.add(musica);
+
+                // Map para retornar ao frontend
+                Map<String, Object> musicaInfo = new HashMap<>();
+                musicaInfo.put("musica", musica);
+                musicaInfo.put("artistaNome", artistaNome);
+
+                recomendacoes.add(musicaInfo);
             });
         }
 
         return recomendacoes;
     }
+
     public void excluirPlaylistDoUsuario(Long usuarioId, Long playlistId) {
         try (Session session = driver.session()) {
             String query = """

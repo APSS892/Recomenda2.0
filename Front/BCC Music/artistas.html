@@ -9,38 +9,48 @@
     <link rel="stylesheet" href="./css/artistas.css">
 </head>
 <body>
-    <header class="text-center py-2">
+    <header class="text-center py-4">
         <h1 class="fw-bold">BCC MUSIC</h1>
-        <p style="color: white;">Escolha seus artistas para recomendações mais personalizadas!</p>
+        <p class="text-white">Escolha seus artistas para recomendações mais personalizadas!</p>
     </header>
-    <br>
-    <div class="container text-center">
+    
+    <div class="container">
         <!-- Barra de pesquisa -->
         <div class="mb-4">
-            <input type="text" placeholder="Buscar" class="form-control search-bar mx-auto">
+            <br>
+            <input type="text" placeholder="Buscar artistas..." class="form-control search-bar mx-auto">
         </div>
 
-        <!-- Área de gêneros -->
+        <!-- Área de Gêneros -->
         <div class="mb-4">
-            <h4>Filtrar por Gênero</h4>
+            <h4 class="text-center">Filtrar por Gênero</h4>
             <div class="d-flex flex-wrap justify-content-center" id="genero-buttons">
-                <!-- Os botões de gênero serão carregados via JS -->
+                <!-- Botões de Gênero carregados via JS -->
             </div>
         </div>
 
-        <!-- Cartões de artistas -->
-        <h4 class="mt-4">Artistas</h4>
+        <!-- Lista de Artistas Selecionados -->
+        <div id="selected-artists-list" class="mb-4">
+            <h4>Artistas Selecionados:</h4>
+            <ul id="selected-artists-ul" class="d-flex flex-wrap justify-content-start">
+                <!-- Artistas selecionados serão exibidos aqui -->
+            </ul>
+        </div>
+        
+
+        <!-- Cartões de Artistas -->
+        <h4 class="mt-4 text-center">Artistas</h4>
         <div class="row justify-content-center" id="artist-cards">
             <!-- Os artistas serão carregados aqui via JS -->
         </div>
 
-        <!-- Quantidade de páginas -->
-        <div class="mb-4" id="quantidade-paginas">
-            <!-- A quantidade de páginas será exibida aqui -->
+        <!-- Quantidade de Páginas -->
+        <div class="text-center mb-4" id="quantidade-paginas">
+            <!-- Exibe quantidade de páginas -->
         </div>
 
         <!-- Navegação -->
-        <div class="mt-4">
+        <div class="text-center mt-4">
             <button id="prevButton" class="btn btn-primary" onclick="navegarPagina('anterior')">Anterior</button>
             <button id="nextButton" class="btn btn-primary" onclick="navegarPagina('proximo')">Próximo</button>
         </div>

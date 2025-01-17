@@ -123,9 +123,9 @@ public class UsuarioController {
         Playlist playlist = playlistService.criarPlaylist(nome, descricao);
         return ResponseEntity.ok(playlist);
     }
-    @PostMapping("/criarplaylist")
+    @PostMapping("/{id}/criar")
     public ResponseEntity<?> criarPlaylist(
-            @RequestParam Long id,
+            @PathVariable Long id,
             @RequestParam String nome,
             @RequestParam String descricao) {
         try {
@@ -148,11 +148,11 @@ public class UsuarioController {
         Playlist playlist = playlistService.adicionarMusicaNaPlaylist(playlistId, musicaId);
         return ResponseEntity.ok(playlist);
     }
-    @PostMapping("/adiciona/adicionarMusica")
+    @PostMapping("/{id}/adiciona/{playlistId}/adicionarMusica/{musicaId}")
     public ResponseEntity<?> adicionarMusicaNaPlaylist(
-            @RequestParam Long id,
-            @RequestParam Long playlistId,
-            @RequestParam Long musicaId) {
+            @PathVariable Long id,
+            @PathVariable Long playlistId,
+            @PathVariable Long musicaId) {
         try {
               Playlist playlist = playlistService.adicionarMusicaNaPlaylistDoUsuario(id, playlistId, musicaId);
             return ResponseEntity.ok(playlist);
@@ -176,10 +176,12 @@ public class UsuarioController {
         }
     }
     @GetMapping("/musicasAdicionadas")
-    public ResponseEntity<List<Musica>> buscarMusicasAdicionadas(@RequestParam Long id) {
-        List<Musica> musicas = usuarioService.buscarMusicasAdicionadasPorUsuario(id);
+    public ResponseEntity<List<Map<String, Object>>> buscarMusicasAdicionadas(@RequestParam Long id) {
+        List<Map<String, Object>> musicas = usuarioService.buscarMusicasAdicionadasPorUsuario(id);
         return ResponseEntity.ok(musicas);
     }
+
+
     @DeleteMapping("/removerMusica")
     public ResponseEntity<?> removerMusicaDoUsuario(
             @RequestParam Long id,
@@ -192,32 +194,43 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao remover música do usuário.");
         }
-    }/*
-    @GetMapping("/recomendacoes/musicas")
-    public ResponseEntity<?> recomendarMusicasPorArtistas(@RequestParam List<Long> artistasIds) {
-        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorArtistas(artistasIds);
-        return ResponseEntity.ok(recomendacoes);
-    }*/
+    }
 
     @GetMapping("/recomendacoes/usuarios")
-    public ResponseEntity<?> recomendarMusicasPorUsuarios(@RequestParam Long id) {
-        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorUsuarios(id);
+        public ResponseEntity<?> recomendarMusicasPorUsuarios(@RequestParam Long id) {
+            List<Map<String, Object>> recomendacoes = usuarioService.recomendarMusicasPorUsuarios(id);
+
+        if (recomendacoes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma música encontrada para o usuário fornecido.");
+        }
+
         return ResponseEntity.ok(recomendacoes);
     }
+
     @GetMapping("/recomendacoes/musica")
     public ResponseEntity<?> recomendarMusicasPorArtistas(@RequestParam List<String> nome) {
         if (nome == null || nome.isEmpty()) {
             return ResponseEntity.badRequest().body("Nenhum nome de artista foi fornecido.");
         }
 
-        List<Musica> recomendacoes = usuarioService.recomendarMusicasPorNomes(nome);
+        try {
+            // Obtém as recomendações, incluindo tanto as músicas quanto os nomes dos artistas
+            List<Map<String, Object>> recomendacoes = usuarioService.recomendarMusicasPorNomes(nome);
 
-        if (recomendacoes.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma música encontrada para os artistas fornecidos.");
+            if (recomendacoes.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma música encontrada para os artistas fornecidos.");
+            }
+
+            // Retorna a resposta com a lista de recomendações (música + nome do artista)
+            return ResponseEntity.ok(recomendacoes);
+        } catch (Exception e) {
+            // Em caso de erro no backend
+            e.printStackTrace();  // Log do erro
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro no servidor: " + e.getMessage());
         }
-
-        return ResponseEntity.ok(recomendacoes);
     }
+
+
 
     @DeleteMapping("/{usuarioId}/playlists/{playlistId}")
     public ResponseEntity<?> excluirPlaylistDoUsuario(

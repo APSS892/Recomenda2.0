@@ -80,17 +80,15 @@ async function carregarMusicas() {
         // Verificar se há músicas retornadas
         if (Array.isArray(musicas) && musicas.length > 0) {
             // Iterar sobre as músicas e criar os cards
-            musicas.forEach(musica => {
+            musicas.forEach(musicaData => {
+                const musica = musicaData.musica; // Acessando o objeto música
+                const artistaNome = musicaData.artistaNome; // Nome do artista
+
                 const col = document.createElement('div');
                 col.classList.add('col-12', 'col-md-6', 'col-lg-4', 'mb-4');
 
                 const card = document.createElement('div');
                 card.classList.add('card', 'text-center');
-
-                /*const img = document.createElement('img');
-                img.src = musica.albumArt || "https://via.placeholder.com/150"; // Imagem do álbum
-                img.alt = musica.titulo || "Música sem título";
-                img.classList.add('card-img-top');*/
 
                 const cardBody = document.createElement('div');
                 cardBody.classList.add('card-body');
@@ -101,11 +99,11 @@ async function carregarMusicas() {
 
                 const artista = document.createElement('p');
                 artista.classList.add('card-text');
-                artista.textContent = musica.artista || "Artista Desconhecido";
+                artista.textContent = artistaNome || "Artista Desconhecido";
 
                 const botaoPlay = document.createElement('button');
                 botaoPlay.classList.add('btn', 'btn-success', 'me-2');
-                botaoPlay.textContent = "Play";
+                botaoPlay.textContent = "Curtir";
 
                 // Adiciona evento para enviar requisição com o ID da música
                 botaoPlay.addEventListener('click', () => {
@@ -116,8 +114,6 @@ async function carregarMusicas() {
                 cardBody.appendChild(titulo);
                 cardBody.appendChild(artista);
                 cardBody.appendChild(botaoPlay);
-
-                //card.appendChild(img);
                 card.appendChild(cardBody);
                 col.appendChild(card);
 
@@ -140,6 +136,7 @@ async function carregarMusicas() {
             </div>`;
     }
 }
+
 // Função para carregar músicas recomendadas por usuários
 async function carregarMusicasUsuarios() {
     try {
@@ -147,7 +144,6 @@ async function carregarMusicasUsuarios() {
         const response = await fetch(`http://localhost:8080/usuarios/recomendacoes/usuarios?id=${userId}`, {
             method: 'GET',
         });
-
 
         if (!response.ok) {
             throw new Error('Falha ao buscar músicas recomendadas por usuários.');
@@ -162,7 +158,10 @@ async function carregarMusicasUsuarios() {
         // Verificar se há músicas retornadas
         if (Array.isArray(musicas) && musicas.length > 0) {
             // Iterar sobre as músicas e criar os cards
-            musicas.forEach(musica => {
+            musicas.forEach(musicaData => {
+                const musica = musicaData.musica; // Acessando o objeto música
+                const artistaNome = musicaData.artistaNome; // Nome do artista
+
                 const col = document.createElement('div');
                 col.classList.add('col-12', 'col-md-6', 'col-lg-4', 'mb-4');
 
@@ -178,11 +177,11 @@ async function carregarMusicasUsuarios() {
 
                 const artista = document.createElement('p');
                 artista.classList.add('card-text');
-                artista.textContent = musica.artista || "Artista Desconhecido";
+                artista.textContent = artistaNome || "Artista Desconhecido";
 
                 const botaoPlay = document.createElement('button');
                 botaoPlay.classList.add('btn', 'btn-success', 'me-2');
-                botaoPlay.textContent = "Play";
+                botaoPlay.textContent = "Curtir";
 
                 // Adiciona evento para enviar requisição com o ID da música
                 botaoPlay.addEventListener('click', () => {

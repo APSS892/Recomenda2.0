@@ -223,4 +223,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Carrega as músicas ao carregar a página
-//document.addEventListener('DOMContentLoaded', carregarMusicas);
+document.addEventListener('DOMContentLoaded', carregarMusicas);
